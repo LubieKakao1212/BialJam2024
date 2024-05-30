@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf2c5b4e31593b48b97933474c10ab0, type: 3}
+  m_Name: Graphics Settings
+  m_EditorClassIdentifier: 
+  weathersToSprites:
+  - weather: 0
+    sprite: {fileID: -764074803, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 1
+    sprite: {fileID: 1196297286, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 2
+    sprite: {fileID: 1285596659, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 3
+    sprite: {fileID: -1711063467, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 4
+    sprite: {fileID: -1493852627, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 5
+    sprite: {fileID: 113948343, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 6
+    sprite: {fileID: 430129228, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+  - weather: 7
+    sprite: {fileID: -1168676186, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}

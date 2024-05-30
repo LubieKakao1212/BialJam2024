@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cee2519075658634bb6e8af5d53e0f71
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - graphicSettings: {fileID: 11400000, guid: edc2fbb847e68124da2aab147c004bfd, type: 2}
+  - measurePoint: {instanceID: 0}
+  - spriteRenderer: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
