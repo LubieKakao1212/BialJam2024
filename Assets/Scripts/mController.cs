@@ -115,6 +115,7 @@ public class mController : MonoBehaviour
     [SerializeField] private AudioClip[] concreteClips = default;
     [SerializeField] private AudioClip[] metalClips = default;
     [SerializeField] private AudioClip[] wetClips = default;
+    [SerializeField] private AudioClip[] deepwetClips = default;
 
     [Header("Footstep Jump & Land Sounds")]
     [SerializeField] private AudioClip[] sandJumpClips = default;
@@ -123,8 +124,10 @@ public class mController : MonoBehaviour
     [SerializeField] private AudioClip[] concreteLandClips = default;
     [SerializeField] private AudioClip[] metalJumpClips = default;
     [SerializeField] private AudioClip[] metalLandClips = default;
-    [SerializeField] private AudioClip[] wetJumpClips = default;
+    //[SerializeField] private AudioClip[] wetJumpClips = default;
     [SerializeField] private AudioClip[] wetLandClips = default;
+    [SerializeField] private AudioClip[] deepwetLandClips = default;
+    private int lastRandomIndex = 0;
     #endregion
 
     private Vector3 hitPointNormal; // used for sliding
@@ -256,13 +259,16 @@ public class mController : MonoBehaviour
             case "footsteps/metal":
                 PlaySound(metalJumpClips, 1f);
                 break;
-            default:
+            case "footsteps/sand":
                 PlaySound(sandJumpClips, 1f);
+                break;
+            default:
+                PlaySound(concreteJumpClips, 1f);
                 break;
         }
 
-        if(useWetStep)
-            PlaySound(wetJumpClips, 1f, wetFootstepAudioSource);
+        //if(useWetStep)
+            //PlaySound(wetJumpClips, 1f, wetFootstepAudioSource);
     }
     private void PlayLandSound(RaycastHit hit)
     {
@@ -274,13 +280,22 @@ public class mController : MonoBehaviour
             case "footsteps/metal":
                 PlaySound(metalLandClips, 1f);
                 break;
-            default:
+            case "footsteps/sand":
                 PlaySound(sandLandClips, 1f);
+                break;
+            case "footsteps/wet":
+                PlaySound(wetLandClips, 1f);
+                break;
+            case "footsteps/deepwet":
+                PlaySound(deepwetLandClips, 1f);
+                break;
+            default:
+                PlaySound(concreteLandClips, 1f);
                 break;
         }
 
-        if(useWetStep)
-            PlaySound(wetLandClips, 1f, wetFootstepAudioSource);
+        //if(useWetStep)
+            //PlaySound(wetLandClips, 1f, wetFootstepAudioSource);
     }
 
     private void HandleFootsteps()
@@ -315,8 +330,17 @@ public class mController : MonoBehaviour
             case "footsteps/metal":
                 PlaySound(metalClips);
                 break;
-            default:
+            case "footsteps/sand":
                 PlaySound(sandClips);
+                break;
+            case "footsteps/wet":
+                PlaySound(wetClips);
+                break;
+            case "footsteps/deepwet":
+                PlaySound(deepwetClips);
+                break;
+            default:
+                PlaySound(concreteClips);
                 break;
         }
 
@@ -455,7 +479,20 @@ public class mController : MonoBehaviour
 
     private void PlaySound(AudioClip[] clips, float volume, AudioSource source)
     {
-        source.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Length - 1)]);
+        int random = 0;
+        if(clips.Length > 1)
+        {
+            random = UnityEngine.Random.Range(0, clips.Length - 1);
+            if(random == lastRandomIndex)
+                random = UnityEngine.Random.Range(0, clips.Length - 1);
+            if(random == lastRandomIndex)
+                random = UnityEngine.Random.Range(0, clips.Length - 1);
+            if(random == lastRandomIndex)
+                random = UnityEngine.Random.Range(0, clips.Length - 1);
+        }
+
+        source.PlayOneShot(clips[random]);
+        lastRandomIndex = random;
     }
     private void PlaySound(AudioClip[] clips, float volume)
     {
