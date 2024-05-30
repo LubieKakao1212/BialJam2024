@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - footsteps/concrete
+  - footsteps/metal
+  - footsteps/wet
+  - footsteps/sand
+  - footsteps/deepwet
   layers:
   - Default
   - TransparentFX
