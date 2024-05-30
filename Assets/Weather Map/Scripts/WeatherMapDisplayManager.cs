@@ -17,7 +17,6 @@ public class WeatherMapDisplayManager : MonoBehaviour
     private float refreshTime = 1;
     private float refreshTimer;
 
-    [Header("Display Elements")]
     [SerializeField]
     private List<GameObject> displayElements;
 
