@@ -2,7 +2,6 @@
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
-using WorldGeneration2D;
 #endif
 
 public class AirPressure : MonoBehaviour
