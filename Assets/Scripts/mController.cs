@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class mController : MonoBehaviour
@@ -211,11 +210,10 @@ public class mController : MonoBehaviour
             CurrentSpeed * Input.GetAxis("Horizontal")
         );
         float moveDirYCache = moveDirection.y;
-        moveDirection = 
-            (transform.TransformDirection(Vector3.forward) * currentInput.x)
-            + (transform.TransformDirection(Vector3.right) * currentInput.y);
+        moveDirection = transform.forward * currentInput.x + transform.right * currentInput.y;
         moveDirection.y = moveDirYCache;
     }
+
     private void HandleMouseLook()
     {
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
@@ -482,13 +480,13 @@ public class mController : MonoBehaviour
         int random = 0;
         if(clips.Length > 1)
         {
-            random = UnityEngine.Random.Range(0, clips.Length - 1);
+            random = Random.Range(0, clips.Length - 1);
             if(random == lastRandomIndex)
-                random = UnityEngine.Random.Range(0, clips.Length - 1);
+                random = Random.Range(0, clips.Length - 1);
             if(random == lastRandomIndex)
-                random = UnityEngine.Random.Range(0, clips.Length - 1);
+                random = Random.Range(0, clips.Length - 1);
             if(random == lastRandomIndex)
-                random = UnityEngine.Random.Range(0, clips.Length - 1);
+                random = Random.Range(0, clips.Length - 1);
         }
 
         source.PlayOneShot(clips[random]);

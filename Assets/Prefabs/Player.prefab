@@ -534,6 +534,8 @@ GameObject:
   - component: {fileID: 5337601239762830336}
   - component: {fileID: 7397637742170527533}
   - component: {fileID: 6527859197433646476}
+  - component: {fileID: 6416980026851400463}
+  - component: {fileID: 1257881415043671184}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -754,6 +756,39 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b978f371117b55443a8361767f221296, type: 3}
   - {fileID: 8300000, guid: ab24d88dcd8425d42aa6e6f56ca8a3e6, type: 3}
   - {fileID: 8300000, guid: 8a4d005e3a3957346a79313ef9e6d89f, type: 3}
+--- !u!114 &6416980026851400463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6039805633237617430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c9afdf730b8bad448d8b0c27487c964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windSettings: {fileID: 11400000, guid: 3e74a0bcf9ac9fa46a455d77fce0065e, type: 2}
+  updating: 1
+  windVelocity: {x: 0, y: 0}
+--- !u!114 &1257881415043671184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6039805633237617430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b2dd28825984f24588915372ca24e02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windMeasurePoint: {fileID: 6416980026851400463}
+  characterController: {fileID: 7397637742170527533}
+  inAirWindInfluenceThreshold: 1
+  onGroundWindInfluenceThreshold: 2
+  inAirMultiplier: 0.37
+  onGroundMultiplier: 0.21
 --- !u!1001 &1733020824322526426
 PrefabInstance:
   m_ObjectHideFlags: 0
