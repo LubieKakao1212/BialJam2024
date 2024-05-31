@@ -11,6 +11,29 @@ public class SectorVisualizer : MonoBehaviour
     public float height = 100;
     public float gap = 0.05f;
     public float trasparency = 0.9f;
+    [SerializeField] GameObject player;
+    [SerializeField] GameObject rainSector;
+    public ArrayList sectorsList;
+
+    public void OnEnable()
+    {
+        if(sectorsList == null)
+            sectorsList = new ArrayList();
+
+        if(player == null)
+            player = GameObject.FindGameObjectWithTag("player");
+
+        if(sectorsList.Count == 0)
+        {
+             for(int x = -mapSize/2 + sectorSize / 2; x <= mapSize/2 - sectorSize / 2; x+=sectorSize)
+            {
+                for(int z = -mapSize/2 + sectorSize / 2; z <= mapSize/2 - sectorSize / 2; z+=sectorSize)
+                {
+                    sectorsList.Add(Instantiate(rainSector, new Vector3(x, 0, z), Quaternion.identity));
+                }
+            }
+        }
+    }
 
     void OnDrawGizmosSelected()
     {
@@ -28,6 +51,11 @@ public class SectorVisualizer : MonoBehaviour
                 ));
             }
         }
+    }
+
+    private float distanceToPlayer()
+    {
+        return 0;
     }
 
     private Color randomColor()
