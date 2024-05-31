@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SimDebugMaterial
+  m_Name: Temperature
   m_Shader: {fileID: -6465566751694194690, guid: fb34f930caca00e4c9b2899d558ec115,
     type: 3}
   m_Parent: {fileID: 0}
