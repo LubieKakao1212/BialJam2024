@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using static Unity.Mathematics.math;
 
 namespace Weather
@@ -25,7 +26,9 @@ namespace Weather
         public Texture2D texturePressure;
         [SerializeField]
         public Texture2D textureTemperature;
-       
+        [SerializeField]
+        public Texture2D textureVelocity;
+
         [SerializeField]
         private float timeScale = 1f;
 
@@ -38,7 +41,7 @@ namespace Weather
         private float diffusionT = 0.25f;
 
         [SerializeField]
-        private Sigmoid temperaturePressureGen;
+        private float temperaturePressureGen;
 
         private void Start()
         {
@@ -56,26 +59,29 @@ namespace Weather
                 var y = (i / size.x);
                 var yNorm = (y - size.y / 2f) * 2f / size.y;
 
-                state.grid[i] = new Cell() { p = noise.cnoise(new float2(xNorm, yNorm) * 2f) };
+                state.grid[i] = new Cell() {
+                    p = 0f,// noise.cnoise(new float2(xNorm, yNorm) * 2f),
+                    t = yNorm < 0.05f && yNorm > -0.045f ? 1f : 0f
+                };
             }
 
-            for (int i=0; i < state.vX.Length; i++)
+            /*for (int i=0; i < state.vX.Length; i++)
             {
                 state.vX[i] = 1f;
-            }
+            }*/
 
             FillDebug();
         }
 
         private void Update()
         {
-            var c = state.grid[2525];
+            /*var c = state.grid[2525];
             c.t = 2f;
             state.grid[2525] = c;
 
-            c = state.grid[5525];
+            c = state.grid[5500];
             c.p = -4f;
-            state.grid[5525] = c;
+            state.grid[5500] = c;*/
 
             float dt = Time.fixedDeltaTime * timeScale;
             Scheduler.Tick(ref state, dt, temperaturePressureGen, decay, 
@@ -115,6 +121,28 @@ namespace Weather
 
                 textureTemperature.SetPixels(pixels);
                 textureTemperature.Apply();
+            }
+
+            if (textureVelocity != null)
+            {
+                for (int y = 0; y < size.y; y++)
+                    for (int x = 0; x < size.x; x++)
+                    {
+                        var pIdx = y * size.x + x;
+                        if (x == size.x - 1 || y == size.y - 1)
+                        {
+                            pixels[pIdx] = new Color(1f, 1f, 1f);
+                        }
+                        else
+                        {
+                            var vXIdx = pIdx - y;
+                            var vYIdx = pIdx;
+                            pixels[pIdx] = new Color(state.vX[vXIdx], state.vY[vYIdx], 0f);
+                        }
+                    }
+
+                textureVelocity.SetPixels(pixels);
+                textureVelocity.Apply();
             }
         }
 
@@ -163,7 +191,7 @@ namespace Weather
 
         private class Scheduler
         {
-            public static void Tick(ref State state, float dt, in Sigmoid temperatiurePressureGen, float decay, float diffusionFactorP, float diffusionFactorT, int iterations)
+            public static void Tick(ref State state, float dt, in float temperatiurePressureGen, float decay, float diffusionFactorP, float diffusionFactorT, int iterations)
             {
                 var next = state.Copy(Allocator.Temp);
                 var size = next.size;
@@ -196,34 +224,47 @@ namespace Weather
                         var vXdt = vX * dt;
                         var vYdt = vY * dt;
 
-                        var dXddt = dX * ddt;
-                        var dYddt = dY * ddt;
+                        #region Swirl
+                        var x1 = (x - size.x / 2f) * 2f / size.x;
+                        var y1 = (y - size.y / 2f) * 2f / size.y;
+                        var theta = atan2(y1, x1);
+                        var d = sqrt(x1 * x1 + y1 * y1);
+                        var distanceFactor = d < 0.5f && d > 0.1f ? 1f : 0f;// ( / 10f);
+                        //distanceFactor = abs(distanceFactor) + 5f;
+                        vXdt = -sin(theta) * dt * distanceFactor;
+                        vYdt = cos(theta) * dt * distanceFactor;
+                        #endregion
+
+                        //TODO Revert
+                        var dXddt = 0;// dX * ddt;
+                        var dYddt = 0;// dY * ddt;
 
                         var xd = vXdt + dXddt;
                         var yd = vYdt + dYddt;
 
                         nextCell.p += xd;
                         nextCell.p += yd;
-                        nextCell.t += xd / 2f;
-                        nextCell.t += yd / 2f;
+                        nextCell.t += xd * 5f;
+                        nextCell.t += yd * 5f;
                         //Move(ref nextCell.t, ref nextCellRight.t, xd / 2f, -1f, float.PositiveInfinity);
                         //Move(ref nextCell.t, ref nextCellDown.t, yd / 2f, -1f, float.PositiveInfinity);
-                        nextCell.t = max(nextCell.t, 0f);
+                        //nextCell.t = ;max(nextCell.t, 0f);
                         next.grid[gridIdx] = nextCell;
 
                         nextCellRight.p -= xd;
-                        nextCellRight.t -= xd / 2f;
+                        nextCellRight.t -= xd * 5f;
                         next.grid[gridIdx + 1] = nextCellRight;
 
                         nextCellDown.p -= yd;
-                        nextCellDown.t -= yd / 2f;
+                        nextCellDown.t -= yd * 5f;
                         next.grid[gridIdx + size.x] = nextCellDown;
 
                         vX += dX * dt;
                         vY += dY * dt;
 
-                        next.vX[velXIdx] = vX;
-                        next.vY[velYIdx] = vY;
+                        //TODO Revert
+                        next.vX[velXIdx] = vXdt / dt;//vX;
+                        next.vY[velYIdx] = vYdt / dt;//vY;
                     }
                 Profiler.EndSample();
 
@@ -279,7 +320,7 @@ namespace Weather
                     //1 * p > |t|
                     //sign(f) -> sign(t)
                     //
-                    cell.p += CalculateTemperaturePressureGenValue(cell.p, cell.t, 1f);//temperatiurePressureGen.Evaluate(cell.t) * dt;
+                    cell.p += CalculateTemperaturePressureGenerationValue(cell.p, cell.t, temperatiurePressureGen);//temperatiurePressureGen.Evaluate(cell.t) * dt;
                     next.grid[i] = cell;
                 }
                 #endregion
@@ -378,7 +419,7 @@ namespace Weather
                 }
             }
 
-            private static float CalculateTemperaturePressureGenValue(float p, float t, float scale, float tScale = 1f, float tOffset = 0f)
+            private static float CalculateTemperaturePressureGenerationValue(float p, float t, float scale, float tScale = 1f, float tOffset = 0f)
             {
                 t = t * tScale + tOffset;
                 var ta = abs(t);
