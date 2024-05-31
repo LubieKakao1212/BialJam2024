@@ -4456,6 +4456,11 @@ PrefabInstance:
       propertyPath: measurePoint
       value: 
       objectReference: {fileID: 998191086}
+    - target: {fileID: 6548753459016444354, guid: 624419a98d968dc499dbe90b41b69611,
+        type: 3}
+      propertyPath: measurePoint
+      value: 
+      objectReference: {fileID: 998191086}
     - target: {fileID: 7893118679752561966, guid: 624419a98d968dc499dbe90b41b69611,
         type: 3}
       propertyPath: m_Pivot.x

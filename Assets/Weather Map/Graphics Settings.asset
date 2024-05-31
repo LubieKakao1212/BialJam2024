@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weathersToSprites:
   - weather: 0
-    sprite: {fileID: -764074803, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 4170129219552070142, guid: 4b12abfc65be65d4b96a29eae26e1e25,
+      type: 3}
   - weather: 1
-    sprite: {fileID: 1196297286, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 5552654483791333309, guid: 0d2aa4de60a15644983570e348b076de,
+      type: 3}
   - weather: 2
-    sprite: {fileID: 1285596659, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 917042257263379361, guid: 8b578ac2e39310a46946d6fa6189af29, type: 3}
   - weather: 3
-    sprite: {fileID: -1711063467, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 45423179819413616, guid: 48abdd9cd04fe3e4aa046fdc7e04a91e, type: 3}
   - weather: 4
-    sprite: {fileID: -1493852627, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 3413612641588330197, guid: e2963d4ecbbd1cd42907a31641f62a42,
+      type: 3}
   - weather: 5
-    sprite: {fileID: 113948343, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 4882234881764799700, guid: 7d8eda7a6cf56354e8d258a95bc9fb4b,
+      type: 3}
   - weather: 6
-    sprite: {fileID: 430129228, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
-  - weather: 7
-    sprite: {fileID: -1168676186, guid: 455b54213f332464a88a1f2b0bb091bc, type: 3}
+    visual: {fileID: 5170221017747875479, guid: d43c416e4d7313b4bba825f23ef00e7f,
+      type: 3}

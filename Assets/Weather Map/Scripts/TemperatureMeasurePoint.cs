@@ -9,7 +9,7 @@ public enum WeatherType
     Cloudy,
     Rainy,
     Snowy,
-    Storm
+    //Storm,
 }
 
 public class TemperatureMeasurePoint : WeatherMeasurePoint

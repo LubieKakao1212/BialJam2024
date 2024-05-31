@@ -8,17 +8,16 @@ public class TemperatureMeasurePointGraphic : MonoBehaviour
     [SerializeField]
     private TemperatureMeasurePoint measurePoint;
     [SerializeField]
-    private SpriteRenderer spriteRenderer;
+    private Transform visualHolder;
 
     private void Reset()
     {
         measurePoint = GetComponentInParent<TemperatureMeasurePoint>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Awake()
     {
-        spriteRenderer.transform.forward = Vector3.down;
+        visualHolder.forward = Vector3.down;
     }
 
     private void Start()
@@ -28,6 +27,11 @@ public class TemperatureMeasurePointGraphic : MonoBehaviour
 
     private void RefreshGraphic()
     {
-        spriteRenderer.sprite = graphicSettings.GetGraphic(measurePoint.CurrentWeather);
+        for (int i = 0; i < visualHolder.childCount; i++)
+        {
+            Destroy(visualHolder.GetChild(i).gameObject);
+        }
+        var visualPrototype = graphicSettings.GetGraphic(measurePoint.CurrentWeather);
+        var visual = Instantiate(visualPrototype, visualHolder);
     }
 }
