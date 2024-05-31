@@ -5,6 +5,9 @@ using UnityEngine;
 public class WindMeasurePoint : WeatherMeasurePoint
 {
     [SerializeField]
+    private WindSettings windSettings;
+
+    [SerializeField]
     private float maxWindSpeed = 2;
 
     [SerializeField]
@@ -14,8 +17,6 @@ public class WindMeasurePoint : WeatherMeasurePoint
     private Vector2 windVelocity;
     public Vector2 WindVelocity => windVelocity;
 
-    [SerializeField]
-    private float perlinScale = 10;
 
     private void Start()
     {
@@ -26,9 +27,7 @@ public class WindMeasurePoint : WeatherMeasurePoint
     {
         float x = transform.position.x;
         float y = transform.position.z;
-        windVelocity = maxWindSpeed * new Vector2(
-            Mathf.PerlinNoise(x / perlinScale + 2.1f , y / perlinScale + 3.7f) * 2 - 1 ,
-            Mathf.PerlinNoise(x / perlinScale - 6.9f, y / perlinScale - 420) * 2 - 1);
+        windVelocity = maxWindSpeed * windSettings.GetVelocity(x, y);
     }
 
     private void Update()
