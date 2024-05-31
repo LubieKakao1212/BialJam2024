@@ -163,8 +163,8 @@ MonoBehaviour:
   timeScale: 1
   decay: 1
   diffusionP: 0
-  diffusionT: 1
-  temperaturePressureGen: -0.1
+  diffusionT: 0.5
+  temperaturePressureGen: 0.1
 --- !u!4 &5594066
 Transform:
   m_ObjectHideFlags: 0
