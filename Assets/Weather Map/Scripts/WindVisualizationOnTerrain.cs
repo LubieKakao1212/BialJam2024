@@ -4,7 +4,7 @@ using UnityEngine;
 public class WindVisualizationOnTerrain : MonoBehaviour
 {
     [SerializeField]
-    private WindSettings windSettings;
+    private WindPressureSettings windSettings;
 
     private Terrain _terrain;
     public Terrain Terrain
@@ -44,11 +44,7 @@ public class WindVisualizationOnTerrain : MonoBehaviour
         int alphamapResolution = terrainData.alphamapResolution;
         float oneOverResolution = 1f / alphamapResolution;
 
-        float cos = 1;
-
         var terrainSize = terrainData.size;
-        float oneOverWidth = 1f / terrainSize.x;
-        float oneOverLength = 1f / terrainSize.z;
 
         for (int j = 0; j < alphamapResolution; j++)
         {
