@@ -122,13 +122,12 @@ MonoBehaviour:
     passTag: Render Terrain
     Event: 300
     filterSettings:
-      RenderQueueType: 1
+      RenderQueueType: 0
       LayerMask:
         serializedVersion: 2
-        m_Bits: 256
+        m_Bits: 4352
       PassNames: []
-    overrideMaterial: {fileID: -876546973899608171, guid: 3265765376593f0459b9c5905f5e2ba7,
-      type: 3}
+    overrideMaterial: {fileID: 2100000, guid: 0f91910c9737c704ea376fe326699d4b, type: 2}
     overrideMaterialPassIndex: 0
     overrideShader: {fileID: 0}
     overrideShaderPassIndex: 0
