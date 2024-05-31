@@ -159,9 +159,9 @@ MonoBehaviour:
   iterations: 8
   texturePressure: {fileID: 2800000, guid: 91a4c4959d3d42c43a979049c173214e, type: 3}
   textureTemperature: {fileID: 2800000, guid: 0a3cf0304f47b9c44917f6e8e6f40616, type: 3}
-  textureVelocity: {fileID: 0}
-  timeScale: 1
-  decay: 1
+  textureVelocity: {fileID: 2800000, guid: 2e5cd5cbfe22bb645b85fcd4ef43d528, type: 3}
+  timeScale: 0.125
+  decay: 0.999
   diffusionP: 0
   diffusionT: 0
   temperaturePressureGen: 0
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 213874985}
   - component: {fileID: 213874984}
   m_Layer: 0
-  m_Name: TemperatureDebug (1)
+  m_Name: VelocityDebug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 0a3cf0304f47b9c44917f6e8e6f40616, type: 3}
+  m_Texture: {fileID: 2800000, guid: 2e5cd5cbfe22bb645b85fcd4ef43d528, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0

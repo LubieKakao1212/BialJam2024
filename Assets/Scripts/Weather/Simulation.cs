@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -65,10 +66,21 @@ namespace Weather
                 };
             }
 
+            /*for (int i=0; i<state.vX.Length; i++)
+            {
+                state.vX[i] = random.NextFloat() * 2f - 1f;
+            }
+            for (int i = 0; i < state.vY.Length; i++)
+            {
+                state.vY[i] = random.NextFloat() * 2f - 1f;
+            }*/
             /*for (int i=0; i < state.vX.Length; i++)
             {
                 state.vX[i] = 1f;
             }*/
+
+            state.vX[5555] = 1f;
+            state.vY[5555] = 1f;
 
             FillDebug();
         }
@@ -151,7 +163,27 @@ namespace Weather
             state.Dispose();
         }
 
-        private struct Cell { public float p; public float t; };
+        private struct Cell 
+        { 
+            public float p; 
+            public float t; 
+            public float2 flowCache;
+
+            public static Cell Lerp(in Cell xy, in Cell Xy, in Cell xY, in Cell XY, float tx, float ty)
+            {
+                var xyf = float4(xy.p, xy.t, xy.flowCache);
+                var Xyf = float4(Xy.p, Xy.t, Xy.flowCache);
+                var XYf = float4(XY.p, XY.t, XY.flowCache);
+                var xYf = float4(xY.p, xY.t, xY.flowCache);
+
+                var result = lerp(
+                    lerp(xyf, Xyf, tx),
+                    lerp(xYf, XYf, tx),
+                    ty);
+
+                return new Cell() { p = result.x, t = result.y, flowCache = result.zw };
+            }
+        }
         
         private struct State : IDisposable { 
             
@@ -200,20 +232,20 @@ namespace Weather
 
                 Profiler.BeginSample("Pressure Gradient");
                 //TODO handle Bound
-                for (int y = 0; y < size.y - 1; y++)
-                    for (int x = 0; x < size.x - 1; x++)
+                for (int y = 1; y < size.y - 1; y++)
+                    for (int x = 1; x < size.x - 1; x++)
                     {
                         var gridIdx = y * size.x + x;
                         var velXIdx = y * (size.x - 1) + x;
                         var velYIdx = y * size.x + x;
 
                         var cell = state.grid[gridIdx];
-                        var nextCell = next.grid[gridIdx];
+                        //var nextCell = next.grid[gridIdx];
 
                         var cellRight = state.grid[gridIdx + 1];
                         var cellDown = state.grid[gridIdx + size.x];
-                        var nextCellRight = next.grid[gridIdx + 1];
-                        var nextCellDown = next.grid[gridIdx + size.x];
+                        //var nextCellRight = next.grid[gridIdx + 1];
+                        //var nextCellDown = next.grid[gridIdx + size.x];
                         
                         var dX = cellRight.p - cell.p;
                         var dY = cellDown.p - cell.p;
@@ -221,10 +253,10 @@ namespace Weather
                         var vX = state.vX[velXIdx];
                         var vY = state.vY[velYIdx];
 
-                        var vXdt = vX * dt;
-                        var vYdt = vY * dt;
+                        //var vXdt = vX * dt;
+                        //var vYdt = vY * dt;
 
-                        #region Swirl
+                        /*#region Swirl
                         var x1 = (x - size.x / 2f) * 2f / size.x;
                         var y1 = (y - size.y / 2f) * 2f / size.y;
                         var theta = atan2(y1, x1);
@@ -233,9 +265,9 @@ namespace Weather
                         //distanceFactor = abs(distanceFactor) + 5f;
                         vXdt = -sin(theta) * dt * distanceFactor;
                         vYdt = cos(theta) * dt * distanceFactor;
-                        #endregion
+                        #endregion*/
 
-                        //TODO Revert
+                        /*//TODO Revert
                         var dXddt = 0;// dX * ddt;
                         var dYddt = 0;// dY * ddt;
 
@@ -249,25 +281,34 @@ namespace Weather
                         //Move(ref nextCell.t, ref nextCellRight.t, xd / 2f, -1f, float.PositiveInfinity);
                         //Move(ref nextCell.t, ref nextCellDown.t, yd / 2f, -1f, float.PositiveInfinity);
                         //nextCell.t = ;max(nextCell.t, 0f);
-                        next.grid[gridIdx] = nextCell;
+                        next.grid[gridIdx] = nextCell;*/
 
-                        nextCellRight.p -= xd;
+                        /*nextCellRight.p -= xd;
                         nextCellRight.t -= xd * 5f;
                         next.grid[gridIdx + 1] = nextCellRight;
 
                         nextCellDown.p -= yd;
                         nextCellDown.t -= yd * 5f;
-                        next.grid[gridIdx + size.x] = nextCellDown;
+                        next.grid[gridIdx + size.x] = nextCellDown;*/
 
                         vX += dX * dt;
                         vY += dY * dt;
 
                         //TODO Revert
-                        next.vX[velXIdx] = vXdt / dt;//vX;
-                        next.vY[velYIdx] = vYdt / dt;//vY;
+                        //next.vX[velXIdx] = vX;//vX;
+                        //next.vY[velYIdx] = vY;//vY;
                     }
                 Profiler.EndSample();
 
+                Profiler.BeginSample("Advect");
+                PackCellFlow(ref next);
+                //next and state swapped on purpose
+                Advect(ref next, ref state, dt);
+                UnpackCellFlow(ref state);
+                var a = next;
+                next = state;
+                state = a;
+                Profiler.EndSample();
 
                 Profiler.BeginSample("Pressurisation");
                 //Pressurisation
@@ -419,6 +460,44 @@ namespace Weather
                 }
             }
 
+            private static void Advect(ref State state, ref State next, float dt)
+            {
+                var size = state.size;
+                //var propagationMatrix = PropagationMatrix(1f);
+
+                for (int y = 1; y < size.y - 1; y++)
+                    for (int x = 1; x < size.x - 1; x++)
+                    {
+                        var gridIdx = y * size.x + x;
+
+                        var vX = 0f;
+                        var vY = 0f;
+
+                        /*for (int j = 0; j < 3; j++)
+                            for (int i = 0; i < 3; i++)
+                            {
+                                var factorX = propagationMatrix[j * 3 + i];
+                                var factorY = propagationMatrix[i * 3 + j];
+
+                                var io = i - 1;
+                                var jo = j - 1;
+
+                                var cellIdx = gridIdx + size.x * jo + io;
+
+                                var cell = state.grid[cellIdx];
+
+                                vX += cell.flowCache.x * factorX;
+                                vY += cell.flowCache.y * factorY;
+                            }*/
+
+                        var cell = state.grid[gridIdx];
+                        var target = float2(x, y);// - cell.flowCache * dt;
+
+                        var targetCell = LerpedCell(state, target);
+                        next.grid[gridIdx] = targetCell;
+                    }
+            }
+
             private static float CalculateTemperaturePressureGenerationValue(float p, float t, float scale, float tScale = 1f, float tOffset = 0f)
             {
                 t = t * tScale + tOffset;
@@ -439,6 +518,105 @@ namespace Weather
                 return s * t * scale;
             }
             
+            private static float[] PropagationMatrix(float bias)
+            {
+                var s = 1f / (1f + SQRT2 * bias);
+                var b = 1f / (1f + bias);
+                var sum = 4f * s + 2f * b + 1f;
+                s /= sum;
+                b /= sum;
+                return new float[]
+                {
+                    s, 0f, s,
+                    b, 1f / sum, b,
+                    s, 0f, s,
+                };
+            }
+            
+            private static float2 CellFlow(in State state, int x, int y)
+            {
+                var size = state.size;
+                var vXIdx = y * (size.x - 1) + x;
+                var vYIdx = y * size.x + x;
+
+                var vX = 0f;
+                if(vXIdx > 0)
+                {
+                    vX += state.vX[vXIdx];
+                }
+                if (x > 1)
+                {
+                    vX -= state.vX[vXIdx - 1];
+                }
+
+                var vY = 0f;
+                if (vYIdx > 0)
+                {
+                    vY += state.vY[vYIdx];
+                }
+                if (y > 1)
+                {
+                    vY -= state.vY[vYIdx - size.x];
+                }
+
+                return new float2(-vX, -vY) / 2f;
+            }
+
+            private static Cell LerpedCell(in State state, float2 pos)
+            {
+                var size = state.size;
+                int2 g = (int2)floor(pos);
+                float2 rem = pos - g;
+
+                var idx = g.y * size.x + g.x;
+                
+                var cxy = idx > 0 ? state.grid[idx] : new Cell();
+                var cXy = g.x < size.x - 1 && g.y > 0 ? state.grid[idx + 1] : new Cell();
+                var cxY = g.y < size.y - 1 && g.x > 0 ? state.grid[idx + size.x] : new Cell();
+                var cXY = g.x < size.x - 1 && g.y < size.y - 1 ? state.grid[idx + size.x + 1] : new Cell();
+
+                return Cell.Lerp(cxy, cXy, cxY, cXY, rem.x, rem.y);
+            }
+    
+            private static void PackCellFlow(ref State state)
+            {
+                var size = state.size;
+                for (int y = 1; y < size.y - 1; y++)
+                    for (int x = 1; x < size.x - 1; x++)
+                    {
+                        var gridIdx = y * size.x + x;
+                        var cell = state.grid[gridIdx];
+                        cell.flowCache = CellFlow(state, x, y);
+                        state.grid[gridIdx] = cell;
+                    }
+            }
+
+            private static void UnpackCellFlow(ref State state)
+            {
+                var size = state.size;
+                //vX
+                for (int y = 0; y < size.y; y++)
+                    for (int x = 0; x < size.x - 1; x++)
+                    {
+                        var vIdx = y * (size.x - 1) + x;
+                        var gridIdx = vIdx + y;
+                        state.vX[vIdx] =
+                            state.grid[gridIdx].flowCache.x -
+                            state.grid[gridIdx + 1].flowCache.x;
+                    }
+
+                //vY
+                for (int y = 0; y < size.y - 2; y++)
+                    for (int x = 0; x < size.x; x++)
+                    {
+                        var vIdx = y * size.x + x;
+                        var gridIdx = vIdx;
+                        state.vY[vIdx] =
+                            state.grid[gridIdx].flowCache.y - 
+                            state.grid[gridIdx + size.x].flowCache.y;
+                    }
+            }
+
             /*public static
 
             private struct Sample
