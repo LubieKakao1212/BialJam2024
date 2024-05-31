@@ -61,25 +61,26 @@ namespace Weather
                 var yNorm = (y - size.y / 2f) * 2f / size.y;
 
                 state.grid[i] = new Cell() {
-                    p = 0f,// noise.cnoise(new float2(xNorm, yNorm) * 2f),
-                    t = yNorm < 0.05f && yNorm > -0.045f ? 1f : 0f
+                    p = noise.cnoise(new float2(xNorm, yNorm) * 0.5f),
+                    t = max(0.5f -lengthsq(float2(xNorm, yNorm)), 0f)//yNorm < 0.05f && yNorm > -0.045f ? 1f : 0f
                 };
             }
 
-            /*for (int i=0; i<state.vX.Length; i++)
+            for (int i=0; i<state.vX.Length; i++)
             {
-                state.vX[i] = random.NextFloat() * 2f - 1f;
+                //state.vX[i] = random.NextFloat() * 2f - 1f;
             }
             for (int i = 0; i < state.vY.Length; i++)
             {
-                state.vY[i] = random.NextFloat() * 2f - 1f;
-            }*/
+                //state.vY[i] = random.NextFloat() * 2f - 1f;
+            }
             /*for (int i=0; i < state.vX.Length; i++)
             {
                 state.vX[i] = 1f;
             }*/
 
             state.vX[5555] = 1f;
+            state.vX[5556] = 1f;
             state.vY[5555] = 1f;
 
             FillDebug();
@@ -295,16 +296,28 @@ namespace Weather
                         vY += dY * dt;
 
                         //TODO Revert
-                        //next.vX[velXIdx] = vX;//vX;
-                        //next.vY[velYIdx] = vY;//vY;
+                        next.vX[velXIdx] = vX;//vX;
+                        next.vY[velYIdx] = vY;//vY;
                     }
                 Profiler.EndSample();
 
                 Profiler.BeginSample("Advect");
                 PackCellFlow(ref next);
-                //next and state swapped on purpose
-                //Advect(ref next, ref state, dt);
+
+                state.Dispose();
+                state = next;
+                next = state.Copy(Allocator.Temp);
                 AdvectVelocity(state, ref next, dt);
+
+                state.Dispose();
+                state = next;
+                next = state.Copy(Allocator.Temp);
+                Advect(state, ref next, dt);
+
+                state.Dispose();
+                state = next;
+                next = state.Copy(Allocator.Temp);
+
                 //UnpackCellFlow(ref state);
                 /*var a = next;
                 next = state;
@@ -325,15 +338,19 @@ namespace Weather
                             var velRIdx = y * (size.x - 1) + x;
                             var velDIdx = y * size.x + x;
 
-                            var velLIdx = y * (size.x - 1) + x - 1;
-                            var velUIdx = y * size.x + x - size.x;
+                            var velLIdx = velRIdx - 1;
+                            var velUIdx = velDIdx - size.x;
 
-                            var d = state.vX[velLIdx] + state.vY[velUIdx] - state.vX[velRIdx] - state.vY[velDIdx];
+                            var d = 
+                                state.vX[velLIdx] - state.vX[velRIdx] + 
+                                state.vY[velUIdx] - state.vY[velDIdx];
+                            d /= 4f;
+                            d *= 0.5f;
 
-                            next.vX[velLIdx] -= d / 4;
-                            next.vY[velUIdx] -= d / 4;
-                            next.vX[velRIdx] += d / 4;
-                            next.vY[velDIdx] += d / 4;
+                            next.vX[velLIdx] -= d;
+                            next.vY[velUIdx] -= d;
+                            next.vX[velRIdx] += d;
+                            next.vY[velDIdx] += d;
                         }
                 }
                 Profiler.EndSample();
@@ -373,14 +390,14 @@ namespace Weather
                 #region Clear Border
                 for (int x = 0; x < size.x; x++)
                 {
-                    next.grid[x] = new Cell() { p = -2f };
-                    next.grid[size.x * (size.y - 1) + x] = new Cell() { p = 2f };
+                    next.grid[x] = new Cell() { p = 0 };
+                    next.grid[size.x * (size.y - 1) + x] = new Cell() { p = 0 };
                 }
 
                 for (int y = 0; y < size.y; y++)
                 {
-                    next.grid[size.x * y] = new Cell() { p = -2f };
-                    next.grid[size.x * y + size.x - 1] = new Cell() { p = 2f };
+                    next.grid[size.x * y] = new Cell() { p = 0 };
+                    next.grid[size.x * y + size.x - 1] = new Cell() { p = 0 };
                 }
                 #endregion
                 Profiler.EndSample();
@@ -461,7 +478,7 @@ namespace Weather
                 }
             }
 
-            private static void Advect(ref State state, ref State next, float dt)
+            private static void Advect(in State state, ref State next, float dt)
             {
                 var size = state.size;
                 //var propagationMatrix = PropagationMatrix(1f);
@@ -474,28 +491,13 @@ namespace Weather
                         var vX = 0f;
                         var vY = 0f;
 
-                        /*for (int j = 0; j < 3; j++)
-                            for (int i = 0; i < 3; i++)
-                            {
-                                var factorX = propagationMatrix[j * 3 + i];
-                                var factorY = propagationMatrix[i * 3 + j];
-
-                                var io = i - 1;
-                                var jo = j - 1;
-
-                                var cellIdx = gridIdx + size.x * jo + io;
-
-                                var cell = state.grid[cellIdx];
-
-                                vX += cell.flowCache.x * factorX;
-                                vY += cell.flowCache.y * factorY;
-                            }*/
-
                         var cell = state.grid[gridIdx];
-                        var target = float2(x, y);// - cell.flowCache * dt;
+                        var target = float2(x, y) + cell.flowCache * dt * 2f;
 
                         var targetCell = LerpedCell(state, target);
-                        next.grid[gridIdx] = targetCell;
+                        cell.t = targetCell.t;
+                        cell.p = targetCell.p;
+                        next.grid[gridIdx] = cell;
                     }
             }
 
@@ -503,14 +505,10 @@ namespace Weather
             {
                 var size = state.size;
                 //vX
-                for (int y = 0; y < size.y; y++)
-                    for (int x = 0; x < size.x - 1; x++)
+                for (int y = 1; y < size.y; y++)
+                    for (int x = 1; x < size.x - 1; x++)
                     {
                         var vIdx = y * (size.x - 1) + x;
-                        /*var gridIdx = vIdx + y;
-                        state.vX[vIdx] =
-                            state.grid[gridIdx].flowCache.x -
-                            state.grid[gridIdx + 1].flowCache.x;*/
 
                         var gPos = int2(x, y);
 
@@ -518,17 +516,13 @@ namespace Weather
                         var vY = LerpYVel(state, gPos);
 
                         //var cell = LerpedCell(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
-                        next.vX[vIdx] = LerpXVel2(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
+                        next.vX[vIdx] = LerpXVel2(state, gPos + float2(0f, 0.5f) + float2(vX, vY) * dt);
                     }
 
-                for (int y = 0; y < size.y - 1; y++)
-                    for (int x = 0; x < size.x; x++)
+                for (int y = 1; y < size.y - 1; y++)
+                    for (int x = 1; x < size.x; x++)
                     {
                         var vIdx = y * size.x + x;
-                        /*var gridIdx = vIdx + y;
-                        state.vX[vIdx] =
-                            state.grid[gridIdx].flowCache.x -
-                            state.grid[gridIdx + 1].flowCache.x;*/
 
                         var gPos = int2(x, y);
 
@@ -536,7 +530,7 @@ namespace Weather
                         var vY = state.vY[vIdx];
 
                         //var cell = LerpedCell(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
-                        next.vY[vIdx] = LerpYVel2(state, gPos + float2(0f, 0.5f) + float2(vX, vY) * dt);
+                        next.vY[vIdx] = LerpYVel2(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
                     }
 
                 /*              
@@ -688,7 +682,7 @@ namespace Weather
                 var v01 = state.vX[idx + row];
                 var v11 = state.vX[idx + row + 1];
 
-                return (v00 + v10 + v01 + v11) / 4f; 
+                return (v00 + v10 + v01 + v11) / 4f;
             }
 
             private static float LerpYVel(in State state, int2 vXpos)
@@ -715,11 +709,11 @@ namespace Weather
             {
                 var size = state.size;
                 var row = size.x - 1;
-                var g = (int2)floor(vYpos);
-                var d = vYpos - g;
+                var g = (int2)floor(vYpos - float2(0f, 0.5f));
+                var d = vYpos - g + float2(0f, -0.5f);
                 var idx = g.y * row + g.x;
 
-                if (g.x < 0 || g.x >= (row - 1) || g.y >= size.y - 1)
+                if (g.y < 0 || g.x < 0 || g.x >= (row - 1) || g.y >= size.y - 1)
                 {
                     return 0;
                 }
@@ -736,11 +730,14 @@ namespace Weather
             {
                 var size = state.size;
                 var row = size.x;
-                var g = (int2)floor(vXpos);
-                var d = vXpos - g;
+                //var g = (int2)floor(vXpos);
+                var g = (int2)floor(vXpos - float2(0.5f, 0f));
+                var d = vXpos - g + float2(-0.5f, 0f);
+                
+                //var d = vXpos - g;
                 var idx = g.y * row + g.x;
 
-                if (g.x < 0 || g.x >= (row - 1) || g.y >= size.y - 2)
+                if (g.y < 0 || g.x < 0 || g.x >= row - 1 || g.y >= size.y - 2)
                 {
                     return 0;
                 }
@@ -763,7 +760,6 @@ namespace Weather
                 private float vY;
             }*/
         }
-
     }
 
     [Serializable]
