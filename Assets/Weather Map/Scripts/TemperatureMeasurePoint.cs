@@ -12,7 +12,7 @@ public enum WeatherType
     //Storm,
 }
 
-public class TemperatureMeasurePoint : WeatherMeasurePoint
+public class TemperatureMeasurePoint : WeatherMeasurePoint<TemperatureMeasurePoint>
 {
     public static readonly int weathersCount = System.Enum.GetValues(typeof(WeatherType)).Length;
 

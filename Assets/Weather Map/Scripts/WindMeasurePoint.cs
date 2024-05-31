@@ -2,13 +2,10 @@
 using UnityEngine;
 
 [SelectionBase]
-public class WindMeasurePoint : WeatherMeasurePoint
+public class WindMeasurePoint : WeatherMeasurePoint<WindMeasurePoint>
 {
     [SerializeField]
-    private WindSettings windSettings;
-
-    [SerializeField]
-    private float maxWindSpeed = 2;
+    private WindPressureSettings windSettings;
 
     [SerializeField]
     private bool updating;
@@ -19,14 +16,20 @@ public class WindMeasurePoint : WeatherMeasurePoint
 
     private void Start()
     {
-        RefreshWindVelocity();
+        //RefreshWindVelocity();
+    }
+
+    public override WindMeasurePoint Init(WeatherMapSettings settings)
+    {
+        windSettings = settings.windPressure;
+        return base.Init(settings);
     }
 
     private void RefreshWindVelocity()
     {
         float x = transform.position.x;
         float y = transform.position.z;
-        windVelocity = maxWindSpeed * windSettings.GetVelocity(x, y);
+        windVelocity = windSettings.GetVelocity(x, y);
     }
 
     private void Update()
