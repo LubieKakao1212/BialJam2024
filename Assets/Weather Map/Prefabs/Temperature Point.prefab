@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cee2519075658634bb6e8af5d53e0f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphicSettings: {fileID: 11400000, guid: edc2fbb847e68124da2aab147c004bfd, type: 2}
+  graphicSettings: {fileID: 11400000, guid: fbb65e98393ef0a47a20859cf29c4500, type: 2}
   measurePoint: {fileID: 9015438512371294065}
   visualHolder: {fileID: 1550890457369441955}
 --- !u!1 &8021874345433064662
