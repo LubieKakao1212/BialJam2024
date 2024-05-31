@@ -156,12 +156,12 @@ MonoBehaviour:
     x: 128
     y: 128
   seed: 1337
-  iterations: 8
+  iterations: 0
   texturePressure: {fileID: 2800000, guid: 91a4c4959d3d42c43a979049c173214e, type: 3}
   textureTemperature: {fileID: 2800000, guid: 0a3cf0304f47b9c44917f6e8e6f40616, type: 3}
   textureVelocity: {fileID: 2800000, guid: 2e5cd5cbfe22bb645b85fcd4ef43d528, type: 3}
-  timeScale: 0.125
-  decay: 0.999
+  timeScale: 0
+  decay: 1
   diffusionP: 0
   diffusionT: 0
   temperaturePressureGen: 0

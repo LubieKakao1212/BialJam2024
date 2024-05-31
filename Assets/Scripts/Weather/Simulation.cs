@@ -303,11 +303,12 @@ namespace Weather
                 Profiler.BeginSample("Advect");
                 PackCellFlow(ref next);
                 //next and state swapped on purpose
-                Advect(ref next, ref state, dt);
-                UnpackCellFlow(ref state);
-                var a = next;
+                //Advect(ref next, ref state, dt);
+                AdvectVelocity(state, ref next, dt);
+                //UnpackCellFlow(ref state);
+                /*var a = next;
                 next = state;
-                state = a;
+                state = a;*/
                 Profiler.EndSample();
 
                 Profiler.BeginSample("Pressurisation");
@@ -498,6 +499,59 @@ namespace Weather
                     }
             }
 
+            private static void AdvectVelocity(in State state, ref State next, float dt)
+            {
+                var size = state.size;
+                //vX
+                for (int y = 0; y < size.y; y++)
+                    for (int x = 0; x < size.x - 1; x++)
+                    {
+                        var vIdx = y * (size.x - 1) + x;
+                        /*var gridIdx = vIdx + y;
+                        state.vX[vIdx] =
+                            state.grid[gridIdx].flowCache.x -
+                            state.grid[gridIdx + 1].flowCache.x;*/
+
+                        var gPos = int2(x, y);
+
+                        var vX = state.vX[vIdx];
+                        var vY = LerpYVel(state, gPos);
+
+                        //var cell = LerpedCell(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
+                        next.vX[vIdx] = LerpXVel2(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
+                    }
+
+                for (int y = 0; y < size.y - 1; y++)
+                    for (int x = 0; x < size.x; x++)
+                    {
+                        var vIdx = y * size.x + x;
+                        /*var gridIdx = vIdx + y;
+                        state.vX[vIdx] =
+                            state.grid[gridIdx].flowCache.x -
+                            state.grid[gridIdx + 1].flowCache.x;*/
+
+                        var gPos = int2(x, y);
+
+                        var vX = LerpXVel(state, gPos);
+                        var vY = state.vY[vIdx];
+
+                        //var cell = LerpedCell(state, gPos + float2(0.5f, 0f) + float2(vX, vY) * dt);
+                        next.vY[vIdx] = LerpYVel2(state, gPos + float2(0f, 0.5f) + float2(vX, vY) * dt);
+                    }
+
+                /*              
+                                //vY
+                                for (int y = 0; y < size.y - 2; y++)
+                                    for (int x = 0; x < size.x; x++)
+                                    {
+                                        var vIdx = y * size.x + x;
+                                        var gridIdx = vIdx;
+                                        state.vY[vIdx] =
+                                            state.grid[gridIdx].flowCache.y -
+                                            state.grid[gridIdx + size.x].flowCache.y;
+                                    }*/
+            }
+
             private static float CalculateTemperaturePressureGenerationValue(float p, float t, float scale, float tScale = 1f, float tOffset = 0f)
             {
                 t = t * tScale + tOffset;
@@ -559,7 +613,7 @@ namespace Weather
                     vY -= state.vY[vYIdx - size.x];
                 }
 
-                return new float2(-vX, -vY) / 2f;
+                return new float2(vX, vY);
             }
 
             private static Cell LerpedCell(in State state, float2 pos)
@@ -590,7 +644,8 @@ namespace Weather
                         state.grid[gridIdx] = cell;
                     }
             }
-
+            
+            [Obsolete]
             private static void UnpackCellFlow(ref State state)
             {
                 var size = state.size;
@@ -617,6 +672,88 @@ namespace Weather
                     }
             }
 
+            private static float LerpXVel(in State state, int2 vYpos)
+            {
+                var size = state.size;
+                var row = size.x - 1;
+                var idx = vYpos.y * row + vYpos.x;
+
+                if (vYpos.x < 0 || vYpos.x >= (row - 1) || vYpos.y >= size.y - 1)
+                {
+                    return 0;
+                }
+
+                var v00 = state.vX[idx];
+                var v10 = state.vX[idx + 1];
+                var v01 = state.vX[idx + row];
+                var v11 = state.vX[idx + row + 1];
+
+                return (v00 + v10 + v01 + v11) / 4f; 
+            }
+
+            private static float LerpYVel(in State state, int2 vXpos)
+            {
+                var size = state.size;
+                var row = size.x;
+                var idx = vXpos.y * row + vXpos.x;
+
+                if (vXpos.y >= size.y - 1)
+                {
+                    //Debug.Log("vXpos.y >= size.y");
+                    return 0;
+                }
+
+                var v00 = state.vY[idx];
+                var v10 = state.vY[idx + 1];
+                var v01 = vXpos.y < size.y - 2 ? state.vY[idx + row] : 0f;
+                var v11 = vXpos.y < size.y - 2 ? state.vY[idx + row + 1] : 0f;
+
+                return (v00 + v10 + v01 + v11) / 4f;
+            }
+
+            private static float LerpXVel2(in State state, float2 vYpos)
+            {
+                var size = state.size;
+                var row = size.x - 1;
+                var g = (int2)floor(vYpos);
+                var d = vYpos - g;
+                var idx = g.y * row + g.x;
+
+                if (g.x < 0 || g.x >= (row - 1) || g.y >= size.y - 1)
+                {
+                    return 0;
+                }
+
+                var v00 = state.vX[idx];
+                var v10 = state.vX[idx + 1];
+                var v01 = state.vX[idx + row];
+                var v11 = state.vX[idx + row + 1];
+
+                return lerp(lerp(v00, v10, d.x), lerp(v01, v11, d.x), d.y);
+            }
+
+            private static float LerpYVel2(in State state, float2 vXpos)
+            {
+                var size = state.size;
+                var row = size.x;
+                var g = (int2)floor(vXpos);
+                var d = vXpos - g;
+                var idx = g.y * row + g.x;
+
+                if (g.x < 0 || g.x >= (row - 1) || g.y >= size.y - 2)
+                {
+                    return 0;
+                }
+
+                var v00 = state.vY[idx];
+                var v10 = state.vY[idx + 1];
+                var v01 = state.vY[idx + row];
+                var v11 = state.vY[idx + row + 1];
+
+                return lerp(lerp(v00, v10, d.x), lerp(v01, v11, d.x), d.y);
+            }
+
+
             /*public static
 
             private struct Sample
@@ -626,7 +763,7 @@ namespace Weather
                 private float vY;
             }*/
         }
-        
+
     }
 
     [Serializable]
