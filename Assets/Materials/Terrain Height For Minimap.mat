@@ -51,8 +51,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _MaxHeight: 200
-    - _MinHeight: 0
+    - _MaxHeight: 210
+    - _MinHeight: 20
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors: []
