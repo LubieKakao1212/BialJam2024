@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9afdf730b8bad448d8b0c27487c964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windSettings: {fileID: 11400000, guid: 93b303585557d674ba72175e990248c2, type: 2}
   maxWindSpeed: 2
   updating: 1
   windVelocity: {x: 0, y: 0}
-  perlinScale: 20
