@@ -6,12 +6,11 @@ public class WindMeasurePointGraphic : MonoBehaviour
     [SerializeField]
     private WindMeasurePoint measurePoint;
     [SerializeField]
-    private Transform graphic;
-
+    private Transform visual;
+        
     private void Reset()
     {
         measurePoint = GetComponentInParent<WindMeasurePoint>();
-        graphic = GetComponentInChildren<SpriteRenderer>()?.transform;
     }
 
     private void Start()
@@ -29,6 +28,6 @@ public class WindMeasurePointGraphic : MonoBehaviour
     {
         var windVelocity = measurePoint.WindVelocity;
         float angle = Vector2.SignedAngle(Vector3.up, windVelocity);
-        transform.eulerAngles = new Vector3(90, angle, 0);
+        visual.localEulerAngles = new Vector3(0, 0, angle);
     }
 }

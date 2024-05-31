@@ -14,6 +14,9 @@ public class WindMeasurePoint : WeatherMeasurePoint
     private Vector2 windVelocity;
     public Vector2 WindVelocity => windVelocity;
 
+    [SerializeField]
+    private float perlinScale = 10;
+
     private void Start()
     {
         RefreshWindVelocity();
@@ -24,8 +27,8 @@ public class WindMeasurePoint : WeatherMeasurePoint
         float x = transform.position.x;
         float y = transform.position.z;
         windVelocity = maxWindSpeed * new Vector2(
-            Mathf.PerlinNoise(x + 2.1f, y + 3.7f) * 2 - 1 ,
-            Mathf.PerlinNoise(x - 6.9f, y - 0.420f) * 2 - 1);
+            Mathf.PerlinNoise(x / perlinScale + 2.1f , y / perlinScale + 3.7f) * 2 - 1 ,
+            Mathf.PerlinNoise(x / perlinScale - 6.9f, y / perlinScale - 420) * 2 - 1);
     }
 
     private void Update()
