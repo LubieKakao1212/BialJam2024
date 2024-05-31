@@ -122,7 +122,7 @@ MonoBehaviour:
     passTag: Render Terrain
     Event: 300
     filterSettings:
-      RenderQueueType: 0
+      RenderQueueType: 1
       LayerMask:
         serializedVersion: 2
         m_Bits: 256
