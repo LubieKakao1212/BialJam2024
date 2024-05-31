@@ -9,6 +9,7 @@ TagManager:
   - footsteps/wet
   - footsteps/sand
   - footsteps/deepwet
+  - player
   layers:
   - Default
   - TransparentFX
