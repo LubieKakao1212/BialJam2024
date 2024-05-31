@@ -1,6 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+
+// class MatRecord{
+//     public Material mat;
+//     public float def;
+//     public float wet;
+
+//     public MatRecord(Material mat, float def, float wet)
+//     {
+//         this.mat = mat;
+//         string[] matProperties = mat.GetPropertyNames(MaterialPropertyType.Float);
+
+//     }
+// }
 
 public class SectorVisualizer : MonoBehaviour
 {
@@ -14,6 +29,31 @@ public class SectorVisualizer : MonoBehaviour
     [SerializeField] GameObject player;
     [SerializeField] GameObject rainSector;
     public ArrayList sectorsList;
+
+    public float transitionTime = 15;
+    public float dryTime = 10;
+    public float wetTime = 30;
+    private bool isWet = false;
+    private float timer;
+
+    [SerializeField] TerrainLayer layer1;
+    [SerializeField] private float targetL1;
+    public float defLayerSmooth1;
+    // [SerializeField] TerrainLayer layer2;
+    // [SerializeField] private float targetL2;
+    // private float defLayerSmooth2;
+
+    // [SerializeField] Material concreteMat;
+    // [SerializeField] private float targetMat1;
+    // private float defSmoothConcrete;
+    // [SerializeField] Material rockMat1;
+    // [SerializeField] private float targetMat2;
+    // private float defSmoothRock1;
+    // [SerializeField] Material rockMat2;
+    // [SerializeField] private float targetMat3;
+    // private float defSmoothrock2;
+
+
 
     public void OnEnable()
     {
@@ -29,7 +69,49 @@ public class SectorVisualizer : MonoBehaviour
             {
                 for(int z = -mapSize/2 + sectorSize / 2; z <= mapSize/2 - sectorSize / 2; z+=sectorSize)
                 {
-                    sectorsList.Add(Instantiate(rainSector, new Vector3(x, 0, z), Quaternion.identity));
+                    var sector = Instantiate(rainSector, new Vector3(x, 0, z), Quaternion.identity);
+                    sectorsList.Add(sector);
+                    //var source = sector.GetComponentInChildren<AudioSource>();
+                    //source.PlayDelayed(Random.Range(0, source.clip.length));
+                }
+            }
+        }
+
+        timer = dryTime;
+
+        defLayerSmooth1 = layer1.smoothness;
+        //defLayerSmooth2 = layer2.smoothness;
+    }
+
+    public void OnDisable()
+    {
+        layer1.smoothness = defLayerSmooth1;
+    }
+
+    public void Update()
+    {
+        timer -= Time.deltaTime;
+        
+        if(timer < 0)
+        {
+            if(!isWet)
+            {
+                if(layer1.smoothness < targetL1)
+                    layer1.smoothness += (targetL1 / transitionTime) * Time.deltaTime;
+                else
+                {
+                    timer = wetTime;
+                    isWet = true;
+                }
+            }
+            else
+            {
+                if(layer1.smoothness < defLayerSmooth1)
+                    layer1.smoothness -= (defLayerSmooth1 / transitionTime) * Time.deltaTime;
+                else 
+                {
+                    timer = dryTime;
+                    isWet = false;
                 }
             }
         }
@@ -53,17 +135,17 @@ public class SectorVisualizer : MonoBehaviour
         }
     }
 
-    private float distanceToPlayer()
+    private float distanceToPlayer(GameObject obj)
     {
-        return 0;
+        return Vector3.Distance(player.transform.position, obj.transform.position);
     }
 
     private Color randomColor()
     {
         return new Color(
-            Random.Range(0, 255),
-            Random.Range(0, 255),
-            Random.Range(0, 255),
+            UnityEngine.Random.Range(0, 255),
+            UnityEngine.Random.Range(0, 255),
+            UnityEngine.Random.Range(0, 255),
             trasparency
         );
     }

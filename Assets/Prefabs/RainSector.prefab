@@ -75,7 +75,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4857125144614766456}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 3.5
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -638,7 +638,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 5000
+    maxNumParticles: 2500
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -9768,7 +9768,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7558090947222080938
 Transform:
   m_ObjectHideFlags: 0
