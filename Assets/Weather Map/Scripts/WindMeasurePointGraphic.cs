@@ -6,7 +6,7 @@ public class WindMeasurePointGraphic : MonoBehaviour
     private WindMeasurePoint measurePoint;
     [SerializeField]
     private Transform visual;
-        
+
     private void Reset()
     {
         measurePoint = GetComponentInParent<WindMeasurePoint>();
@@ -25,8 +25,11 @@ public class WindMeasurePointGraphic : MonoBehaviour
     [ContextMenu("Refresh Graphic")]
     private void RefreshGraphic()
     {
+        var measurePointForward = measurePoint.transform.forward;
         var windVelocity = measurePoint.WindVelocity;
-        float angle = Vector2.SignedAngle(Vector3.up, windVelocity);
-        visual.localEulerAngles = new Vector3(0, 0, angle);
+        float angle = Vector2.SignedAngle(Vector2.up, windVelocity);
+        float pointAngle = Vector2.SignedAngle(Vector2.up, new Vector2(measurePointForward.x, measurePointForward.z));
+
+        visual.localEulerAngles = new Vector3(0, 0, angle - pointAngle);
     }
 }
