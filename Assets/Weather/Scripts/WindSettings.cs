@@ -10,7 +10,7 @@ public class WindSettings : ScriptableObject
     [SerializeField]
     private float noiseScale = 20;
 
-    public Vector2 GetVelocity(float x, float y) => new Vector2(
-        Mathf.PerlinNoise(x / noiseScale + xVelocityNoiseOffset.x, y / noiseScale + xVelocityNoiseOffset.y) * 2 - 1,
-        Mathf.PerlinNoise(x / noiseScale + yVelocityNoiseOffset.x, y / noiseScale + yVelocityNoiseOffset.y) * 2 - 1);
+    public Vector2 GetVelocity(float x, float z) => new Vector2(
+        Mathf.PerlinNoise(x / noiseScale + xVelocityNoiseOffset.x, z / noiseScale + xVelocityNoiseOffset.y) * 2 - 1,
+        Mathf.PerlinNoise(x / noiseScale + yVelocityNoiseOffset.x, z / noiseScale + yVelocityNoiseOffset.y) * 2 - 1);
 }

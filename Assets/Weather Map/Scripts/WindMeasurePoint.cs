@@ -17,7 +17,6 @@ public class WindMeasurePoint : WeatherMeasurePoint
     private Vector2 windVelocity;
     public Vector2 WindVelocity => windVelocity;
 
-
     private void Start()
     {
         RefreshWindVelocity();

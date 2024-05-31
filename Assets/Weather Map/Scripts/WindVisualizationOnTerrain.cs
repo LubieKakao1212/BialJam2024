@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 [RequireComponent (typeof(Terrain))]
@@ -19,19 +17,34 @@ public class WindVisualizationOnTerrain : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private bool updating;
+
+
+    private float[,,] alphamaps; 
+
     private void Start()
     {
+        var terrainData = Terrain.terrainData;
+        int alphamapResolution = terrainData.alphamapResolution;
+        alphamaps = new float[alphamapResolution, alphamapResolution, 3];
         RefreshColors();
     }
 
+    private void Update()
+    {
+        if (updating)
+            RefreshColors();
+    }
+
     [ContextMenu("Refresh Colors")]
-    public void RefreshColors()
+    private void RefreshColors()
     {
         var terrainData = Terrain.terrainData;
         int alphamapResolution = terrainData.alphamapResolution;
         float oneOverResolution = 1f / alphamapResolution;
 
-        float[,,] alphamaps = new float[alphamapResolution, alphamapResolution, 3];
+        float cos = 1;
 
         var terrainSize = terrainData.size;
         float oneOverWidth = 1f / terrainSize.x;
@@ -50,17 +63,6 @@ public class WindVisualizationOnTerrain : MonoBehaviour
                 for (int c = 0; c <= 2; c++)
                 {
                     alphamaps[j, i, c] = color[c];
-                    //alphamaps[i, j, c] = color[c];
-                    //float speedAlongAxis = windVelocity[c];
-                    //if (speedAlongAxis < 0)
-                    //{
-                    //    alphamaps[j, i, (c + 1) % 3] -= speedAlongAxis;
-                    //    alphamaps[j, i, (c + 2) % 3] -= speedAlongAxis;
-                    //}
-                    //else
-                    //{
-                    //    alphamaps[j, i, c] += speedAlongAxis;
-                    //}
                 }
             }
         }
