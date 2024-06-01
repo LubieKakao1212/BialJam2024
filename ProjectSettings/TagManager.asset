@@ -9,12 +9,11 @@ TagManager:
   - footsteps/wet
   - footsteps/sand
   - footsteps/deepwet
-  - player
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - 
