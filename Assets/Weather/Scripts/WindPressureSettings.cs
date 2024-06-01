@@ -11,10 +11,10 @@ public class WindPressureSettings : ScriptableObject
     [SerializeField]
     private Vector2 yVelocityNoiseOffset = new Vector2(6.9f, 420);*/
     [SerializeField]
-    private float noiseScale = 0.05f;
+    public float noiseScale = 0.05f;
 
     [SerializeField]
-    private float timeScale = 0.1f;
+    public float timeScale = 0.1f;
 
     [SerializeField]
     private float rotate = 0f;

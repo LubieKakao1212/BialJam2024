@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028381, g: 0.22571406, b: 0.30692294, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028463, g: 0.22571494, b: 0.3069235, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -323,11 +323,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   windSettings: {fileID: 11400000, guid: 3e74a0bcf9ac9fa46a455d77fce0065e, type: 2}
   updating: 0
---- !u!114 &998191086 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5913985014650840886, guid: 112b4fe1975253b45a8b7b979dc6655d,
+--- !u!4 &1360870043 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5337601239762830336, guid: 8a5f14af2cc22c245917a7c116a63269,
     type: 3}
-  m_PrefabInstance: {fileID: 1677199071236371347}
+  m_PrefabInstance: {fileID: 816036166}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1360870048 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6416980026851400463, guid: 8a5f14af2cc22c245917a7c116a63269,
+    type: 3}
+  m_PrefabInstance: {fileID: 816036166}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -335,12 +341,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9afdf730b8bad448d8b0c27487c964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1360870043 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5337601239762830336, guid: 8a5f14af2cc22c245917a7c116a63269,
-    type: 3}
-  m_PrefabInstance: {fileID: 816036166}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1992781328
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,6 +956,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8254793069247024635, guid: 112b4fe1975253b45a8b7b979dc6655d,
+        type: 3}
+      propertyPath: windPointDensity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8526955857855208655, guid: 112b4fe1975253b45a8b7b979dc6655d,
         type: 3}
       propertyPath: m_Sources.Array.data[0].sourceTransform
@@ -1013,12 +1018,12 @@ PrefabInstance:
         type: 3}
       propertyPath: measurePoint
       value: 
-      objectReference: {fileID: 998191086}
+      objectReference: {fileID: 1360870048}
     - target: {fileID: 6548753459016444354, guid: 624419a98d968dc499dbe90b41b69611,
         type: 3}
       propertyPath: measurePoint
       value: 
-      objectReference: {fileID: 998191086}
+      objectReference: {fileID: 1360870048}
     - target: {fileID: 7893118679752561966, guid: 624419a98d968dc499dbe90b41b69611,
         type: 3}
       propertyPath: m_Pivot.x
