@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Profiling;
 
 public class IsobarsDisplayRefresher : WeatherDisplayRefresher
 {
     [SerializeField]
     private WeatherMapSettings settings;
-
-    [SerializeField]
-    private Rect areaSize;
 
     [SerializeField]
     private Isobars isobars;
@@ -23,14 +21,22 @@ public class IsobarsDisplayRefresher : WeatherDisplayRefresher
 
     private void RefreshIsobars()
     {
-        var pressureSdf = new float[settings.pressureMapResolution.x, settings.pressureMapResolution.y];
-        var scale = areaSize.size / settings.pressureMapResolution;
+        var resolution = settings.pressureMapResolution;
+        var pressureSdf = new float[resolution.x, resolution.y];
+        var scale = 60f * Vector2.one / resolution.y;
+        Profiler.BeginSample("Pressure Nosie");
+        var position = isobars.transform.position;
         for (int x = 0; x < settings.pressureMapResolution.x; x++)
             for (int y = 0; y < settings.pressureMapResolution.y; y++)
             {
-                pressureSdf[x, y] = settings.windPressure.GetPressure(x * scale.x + areaSize.x, y * scale.y + areaSize.y);
+                pressureSdf[x, y] = settings.windPressure.GetPressure(
+                    (x - resolution.x / 2f) * 2f * scale.x + position.x,
+                    (y - resolution.y / 2f) * 2f * scale.y + position.z);
             }
+        Profiler.EndSample();
 
+        Profiler.BeginSample("Iso");
         isobars.FindContours(pressureSdf);
+        Profiler.EndSample();
     }
 }
