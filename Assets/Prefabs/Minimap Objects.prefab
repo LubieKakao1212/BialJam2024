@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8105056682159274631}
   - component: {fileID: 626526005279935072}
   - component: {fileID: 2647244456847105706}
+  - component: {fileID: 7843161265465056824}
   m_Layer: 12
   m_Name: Isobars
   m_TagString: Untagged
@@ -100,6 +101,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7843161265465056824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195886033069379444}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ce78f51fa2289548862021fee153565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: f0fadacc7ad14ce448bb2187448c3862, type: 2}
+  areaSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  isobars: {fileID: 626526005279935072}
 --- !u!1 &1617406635425965232
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,22 +290,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c3221b6a34d1bc429ea3cd5c0325ca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: f0fadacc7ad14ce448bb2187448c3862, type: 2}
-  temperaturePoints: []
-  windPoints: []
+  mapDisplayRefreshers:
+  - {fileID: 8254793069247024635}
+  - {fileID: 7843161265465056824}
   refreshTime: 1
-  displayElements: []
-  areaSize:
-    serializedVersion: 2
-    x: -200
-    y: -200
-    width: 400
-    height: 400
-  windPointPrefab: {fileID: 8139049682724619196, guid: fd1c40ebc0854544ebff71b9b89b0e7f,
-    type: 3}
-  windPointRoot: {fileID: 6198618857432167858}
-  windPointDensity: 0.01
-  isobars: {fileID: 626526005279935072}
 --- !u!1 &2175119844619533769
 GameObject:
   m_ObjectHideFlags: 0
@@ -397,6 +406,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6198618857432167858}
+  - component: {fileID: 8254793069247024635}
   m_Layer: 0
   m_Name: Wind Points Generated
   m_TagString: Untagged
@@ -419,6 +429,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2697935363263686397}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8254793069247024635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4160015120119938491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c4df021cd36154a93c0561294f72d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: f0fadacc7ad14ce448bb2187448c3862, type: 2}
+  areaSize:
+    serializedVersion: 2
+    x: -600
+    y: -600
+    width: 1200
+    height: 1200
+  windPointPrefab: {fileID: 8139049682724619196, guid: fd1c40ebc0854544ebff71b9b89b0e7f,
+    type: 3}
+  windPointRoot: {fileID: 6198618857432167858}
+  windPointDensity: 0.02
+  windPoints: []
 --- !u!1001 &490963549918156
 PrefabInstance:
   m_ObjectHideFlags: 0

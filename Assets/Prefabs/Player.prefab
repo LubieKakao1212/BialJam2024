@@ -787,8 +787,8 @@ MonoBehaviour:
   characterController: {fileID: 7397637742170527533}
   inAirWindInfluenceThreshold: 1
   onGroundWindInfluenceThreshold: 2
-  inAirMultiplier: 0.37
   onGroundMultiplier: 0.21
+  inAirMultiplier: 0.37
 --- !u!1001 &1733020824322526426
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,4 +1,3 @@
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 public abstract class WeatherMeasurePoint<Self> : MonoBehaviour where Self : WeatherMeasurePoint<Self>
@@ -9,5 +8,5 @@ public abstract class WeatherMeasurePoint<Self> : MonoBehaviour where Self : Wea
     {
         this.settings = settings;
         return this as Self;
-    }
+    }   
 }

@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using static Unity.Mathematics.math;
 using UnityEngine;
-using JetBrains.Annotations;
 
 public class Isobars : WeatherMeasurePoint<Isobars>
 {
