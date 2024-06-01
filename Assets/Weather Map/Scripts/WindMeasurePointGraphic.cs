@@ -14,21 +14,20 @@ public class WindMeasurePointGraphic : MonoBehaviour
         measurePoint = GetComponentInParent<WindMeasurePoint>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        RefreshGraphic();
+        measurePoint.OnVelocityChanged += RefreshGraphic;
     }
 
-    private void Update()
+    private void Start()
     {
-        RefreshGraphic();
+        RefreshGraphic(measurePoint.WindVelocity);
     }
 
     [ContextMenu("Refresh Graphic")]
-    private void RefreshGraphic()
+    private void RefreshGraphic(Vector2 windVelocity)
     {
         var measurePointForward = measurePoint.transform.forward;
-        var windVelocity = measurePoint.WindVelocity;
         float angle = Vector2.SignedAngle(Vector2.up, windVelocity);
         float pointAngle = Vector2.SignedAngle(Vector2.up, new Vector2(measurePointForward.x, measurePointForward.z));
         
@@ -39,5 +38,10 @@ public class WindMeasurePointGraphic : MonoBehaviour
 
             visualScaleRoot.localScale = new Vector3(m, m, m);
         }
+    }
+
+    private void OnDisable()
+    {
+        measurePoint.OnVelocityChanged -= RefreshGraphic;
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 [SelectionBase]
 public class WindMeasurePoint : WeatherMeasurePoint<WindMeasurePoint>
 {
+    public event System.Action<Vector2> OnVelocityChanged;
+
     [SerializeField]
     private WindPressureSettings windSettings;
 
@@ -24,6 +26,10 @@ public class WindMeasurePoint : WeatherMeasurePoint<WindMeasurePoint>
     {
         float x = transform.position.x;
         float y = transform.position.z;
-        windVelocity = windSettings.GetVelocity(x, y);
+        var newVelocity = windSettings.GetVelocity(x, y);
+        bool changed = windVelocity != newVelocity;
+        windVelocity = newVelocity;
+        if (changed)
+            OnVelocityChanged?.Invoke(windVelocity);
     }
 }
