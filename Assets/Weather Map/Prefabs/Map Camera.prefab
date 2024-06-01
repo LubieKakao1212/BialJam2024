@@ -167,14 +167,14 @@ Camera:
     width: 1
     height: 1
   near clip plane: -1000
-  far clip plane: 200
+  far clip plane: 2000
   field of view: 60
   orthographic: 1
   orthographic size: 60
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4352
+    m_Bits: 4368
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 60bf643e85479654f9b8d2a7a1872a57, type: 2}
   m_TargetDisplay: 0
@@ -247,3 +247,4 @@ MonoBehaviour:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 200, y: 0, z: 200}
   cameraData: {fileID: 7705040190026160830}
+  renderFog: 0
