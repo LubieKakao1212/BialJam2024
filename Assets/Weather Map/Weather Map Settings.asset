@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Weather Map Settings
   m_EditorClassIdentifier: 
   unitsPerCell: 2
-  pressureMapResolution: {x: 256, y: 256}
+  pressureMapResolution: {x: 205, y: 128}
   windPressure: {fileID: 11400000, guid: 3e74a0bcf9ac9fa46a455d77fce0065e, type: 2}

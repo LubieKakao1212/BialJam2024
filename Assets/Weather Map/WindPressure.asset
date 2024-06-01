@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noiseScale: 0.005
   timeScale: 0.05
-  rotate: 0
+  rotate: 45
