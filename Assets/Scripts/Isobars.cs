@@ -112,6 +112,7 @@ public class Isobars : WeatherMeasurePoint<Isobars>
             Color32 c = new Color32(0,0,0,0);
             if(nH > tH)
             {
+                tH *= -1;
                 if (tH < -0.66f)
                 {
                     c = new Color32(0, 0, 255, 255);

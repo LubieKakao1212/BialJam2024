@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: WindPressure
   m_EditorClassIdentifier: 
   noiseScale: 0.005
-  timeScale: 0.1
+  timeScale: 0.01
   rotate: 45
