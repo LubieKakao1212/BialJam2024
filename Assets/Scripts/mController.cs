@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
 
@@ -138,6 +139,10 @@ public class mController : MonoBehaviour
     private Vector2 currentInput;
     private float rotationX = 0;
 
+    [SerializeField, ReadOnly]
+    private bool isGrounded;
+    private RaycastHit raycastHit;
+
     private void Awake()
     {
         playerCamera = GetComponentInChildren<Camera>();
@@ -150,7 +155,9 @@ public class mController : MonoBehaviour
 
     private void Update()
     {
-        if(canLook){
+        isGrounded = Physics.SphereCast(transform.position, 0.3f, Vector3.down, out raycastHit, 2);
+
+        if (canLook){
             HandleMovementInput();
             HandleMouseLook();
         }
@@ -183,7 +190,7 @@ public class mController : MonoBehaviour
 
     public bool CanMove { get; private set; } = true;
     private bool IsSprinting => canSprint && Input.GetKey(sprintKey);
-    private bool ShouldJump => Input.GetKeyDown(jumpKey) && controller.isGrounded;
+    private bool ShouldJump => Input.GetKeyDown(jumpKey);
     private bool ShouldCrouch => Input.GetKeyDown(crouchKey) && controller.isGrounded;
     private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : IsSprinting ? baseStepSpeed * sprintStepMultipier : baseStepSpeed;
     private float CurrentSpeed => isCrouching ? crouchSpeed : IsSprinting ? sprintSpeed : walkSpeed;
@@ -191,9 +198,9 @@ public class mController : MonoBehaviour
     {
         get
         {
-            if(controller.isGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, 3f))
+            if(controller.isGrounded && isGrounded)
             {
-                hitPointNormal = slopeHit.normal;
+                hitPointNormal = raycastHit.normal;
                 return Vector3.Angle(hitPointNormal, Vector3.up) > controller.slopeLimit;
             }
             else
@@ -225,13 +232,13 @@ public class mController : MonoBehaviour
 
     private void HandleJump()
     {
-        if(ShouldJump && Input.GetKeyDown(jumpKey))
+        if(ShouldJump && isGrounded)
         {
             justJumped = true;
-            if (Physics.Raycast(playerCamera.transform.position, 
-            Vector3.down, out RaycastHit hit, 2)){
+            if (isGrounded)
+            {
                 if(useFootsteps)
-                    PlayJumpSound(hit);
+                    PlayJumpSound(raycastHit);
             }
 
             moveDirection.y = jumpForce;
@@ -240,10 +247,10 @@ public class mController : MonoBehaviour
         if (controller.isGrounded && !ShouldJump && justJumped == true)
         {
             justJumped = false;
-            if (Physics.Raycast(playerCamera.transform.position, Vector3.down, out RaycastHit hit, 2))
+            if (isGrounded)
             {   
                 if(useFootsteps)
-                    PlayLandSound(hit);
+                    PlayLandSound(raycastHit);
             }
         }
     }
@@ -304,15 +311,15 @@ public class mController : MonoBehaviour
 
         if(footstepTimer <= 0)
         {
-            if (Physics.Raycast(playerCamera.transform.position, Vector3.down, out RaycastHit hit, 2))
+            if (isGrounded)
             {
                 if(IsSprinting)
                 {
-                    PlayFootstepSound(hit);
+                    PlayFootstepSound(raycastHit);
                 }
                 else
                 {
-                    PlayFootstepSound(hit);
+                    PlayFootstepSound(raycastHit);
                 }
             }
             footstepTimer = GetCurrentOffset;
@@ -371,7 +378,7 @@ public class mController : MonoBehaviour
 
     private IEnumerator CrouchStand()
     {
-        if (isCrouching && Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f))
+        if (isCrouching && isGrounded)
         {
             yield break;
         }

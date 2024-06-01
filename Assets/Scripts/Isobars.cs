@@ -109,9 +109,11 @@ public class Isobars : WeatherMeasurePoint<Isobars>
 
             var nH = max(v0, max(v1, max(v2, max(v3, max(v4, max(v5, max(v6, max(v7, v8))))))));
 
+            
             Color32 c = new Color32(0,0,0,0);
             if(nH > tH)
             {
+                tH *= -1;
                 if (tH < -0.66f)
                 {
                     c = new Color32(0, 0, 255, 255);

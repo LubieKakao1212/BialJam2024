@@ -146,6 +146,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b32c4cdfaa9e5034e87db4267290201e, type: 2}
+    - target: {fileID: -559044273243958513, guid: 32771b43b40e0354da993c9c2184a6eb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 32771b43b40e0354da993c9c2184a6eb,
         type: 3}
       propertyPath: m_Name
@@ -161,6 +166,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b32c4cdfaa9e5034e87db4267290201e, type: 2}
+    - target: {fileID: 7694099439340805408, guid: 32771b43b40e0354da993c9c2184a6eb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -168,7 +178,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5640732495546517010}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 32771b43b40e0354da993c9c2184a6eb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8312329843856277209}
   m_SourcePrefab: {fileID: 100100000, guid: 32771b43b40e0354da993c9c2184a6eb, type: 3}
 --- !u!4 &1643886621962699242 stripped
 Transform:
@@ -176,3 +190,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7993223164702839525}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7074253207471681460 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 32771b43b40e0354da993c9c2184a6eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 7993223164702839525}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8312329843856277209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7074253207471681460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509162f5316c321478b67ea5db70de07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minAngles: {x: -5, y: -180, z: -5}
+  maxAngles: {x: 5, y: 180, z: 5}
