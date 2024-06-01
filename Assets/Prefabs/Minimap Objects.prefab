@@ -452,7 +452,7 @@ MonoBehaviour:
     type: 3}
   windPointRoot: {fileID: 6198618857432167858}
   windPointDensity: 0.02
-  windPoints: []
+  minimapCamera: {fileID: 7382897336126564811}
 --- !u!1001 &490963549918156
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -850,6 +850,12 @@ PrefabInstance:
 --- !u!4 &1197863684578580614 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2019641870610328563, guid: fc3b50962d5af6e43aaed3e9a0894fda,
+    type: 3}
+  m_PrefabInstance: {fileID: 907650388312617845}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &7382897336126564811 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7705040190026160830, guid: fc3b50962d5af6e43aaed3e9a0894fda,
     type: 3}
   m_PrefabInstance: {fileID: 907650388312617845}
   m_PrefabAsset: {fileID: 0}

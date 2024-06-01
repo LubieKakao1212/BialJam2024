@@ -10,6 +10,6 @@ public class WindSpeedLabel : MonoBehaviour
 
     private void Update()
     {
-        speedLabel.text = $"{(int)Mathf.LerpUnclamped(0, 60, measurePoint.WindVelocity.magnitude)} km/h";
+        speedLabel.text = $"{(int)Mathf.LerpUnclamped(0, 60, measurePoint.WindVelocity.magnitude)} km/h";   
     }
 }
