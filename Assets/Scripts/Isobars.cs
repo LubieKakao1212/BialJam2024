@@ -24,50 +24,37 @@ public class Isobars : WeatherMeasurePoint<Isobars>
         return base.Init(settings);
     }
 
-    public void FindContours(float[,] sdf)
+    private float[] tempVN = new float[9];
+
+    public void FindContours(float[,] pressureMap)
     {
-        var pixels = new Color[texture.width * texture.height];
+        var pixels = new Color32[texture.width * texture.height];
 
         for (int y = 0; y < texture.height; y++)
             for (int x = 0; x < texture.width; x++)
             {
-                var v = sdf[x, y];
-                var tH = ceil((v + offset) / interval) * interval;
-                //var tL = floor((v + offset) / interval) * interval;
+                var pressureInPoint = pressureMap[x, y];
+                var tH = ceil((pressureInPoint + offset) / interval) * interval;
 
-                var vn = new float[]
-                {
-                    GetBound(sdf, x - 1, y - 1),
-                    GetBound(sdf, x + 0, y - 1),
-                    GetBound(sdf, x + 1, y - 1),
+                tempVN[0] = GetBound(pressureMap, x - 1, y - 1);
+                tempVN[1] = GetBound(pressureMap, x + 0, y - 1);
+                tempVN[2] = GetBound(pressureMap, x + 1, y - 1);
 
-                    GetBound(sdf, x - 1, y + 0),
-                    v,//GetBound(sdf, x + 0, y + 0), Self -> v
-                    GetBound(sdf, x + 1, y + 0),
+                tempVN[3] = GetBound(pressureMap, x - 1, y + 0);
+                tempVN[4] = pressureInPoint;
+                tempVN[5] = GetBound(pressureMap, x + 1, y + 0);
 
-                    GetBound(sdf, x - 1, y + 1),
-                    GetBound(sdf, x + 0, y + 1),
-                    GetBound(sdf, x + 1, y + 1)
-                };
+                tempVN[6] = GetBound(pressureMap, x - 1, y + 1);
+                tempVN[7] = GetBound(pressureMap, x + 0, y + 1);
+                tempVN[8] = GetBound(pressureMap, x + 1, y + 1);
 
-                var nH = Mathf.Max(vn);
-                //var nL = Mathf.Min(vn);
+                var nH = Mathf.Max(tempVN);
 
-                var c = Color.clear;
-
-                if (nH > tH)
-                {
-                    c = colorGradient.Evaluate((tH + 1f) / 2f);
-                }
-                /*else if(nL < tL)
-                {
-                    c = new Color(1f, 0.5f, 0.5f);
-                }*/
-
+                Color c = nH > tH ? colorGradient.Evaluate((tH + 1f) / 2f) : Color.clear;
                 pixels[y * texture.width + x] = c;
             }
 
-        texture.SetPixels(pixels);
+        texture.SetPixels32(pixels);
         texture.Apply();
     }
 
